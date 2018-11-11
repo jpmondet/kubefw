@@ -58,6 +58,7 @@ type NetworkPolicyController struct {
 	MetricsEnabled  bool
 	v1NetworkPolicy bool
 	readyForUpdates bool
+	standalone      bool
 
 	// list of all active network policies expressed as networkPolicyInfo
 	networkPoliciesInfo *[]networkPolicyInfo
@@ -297,16 +298,16 @@ func (npc *NetworkPolicyController) syncNetworkPolicyChains(version string) (map
 		activePolicyIpSets[targetDestPodIpSet.Name] = true
 		activePolicyIpSets[targetSourcePodIpSet.Name] = true
 
-		currnetPodIps := make([]string, 0, len(policy.targetPods))
+		currentPodIps := make([]string, 0, len(policy.targetPods))
 		for ip := range policy.targetPods {
-			currnetPodIps = append(currnetPodIps, ip)
+			currentPodIps = append(currentPodIps, ip)
 		}
 
-		err = targetSourcePodIpSet.Refresh(currnetPodIps, utils.OptionTimeout, "0")
+		err = targetSourcePodIpSet.Refresh(currentPodIps, utils.OptionTimeout, "0")
 		if err != nil {
 			glog.Errorf("failed to refresh targetSourcePodIpSet: " + err.Error())
 		}
-		err = targetDestPodIpSet.Refresh(currnetPodIps, utils.OptionTimeout, "0")
+		err = targetDestPodIpSet.Refresh(currentPodIps, utils.OptionTimeout, "0")
 		if err != nil {
 			glog.Errorf("failed to refresh targetDestPodIpSet: " + err.Error())
 		}
@@ -991,8 +992,10 @@ func (npc *NetworkPolicyController) getIngressNetworkPolicyEnabledPods(nodeIp st
 	for _, obj := range npc.podLister.List() {
 		pod := obj.(*api.Pod)
 
-		if strings.Compare(pod.Status.HostIP, nodeIp) != 0 {
-			continue
+		if !npc.standalone {
+			if strings.Compare(pod.Status.HostIP, nodeIp) != 0 {
+				continue
+			}
 		}
 		for _, policy := range *npc.networkPoliciesInfo {
 			if policy.namespace != pod.ObjectMeta.Namespace {
@@ -1020,8 +1023,10 @@ func (npc *NetworkPolicyController) getEgressNetworkPolicyEnabledPods(nodeIp str
 	for _, obj := range npc.podLister.List() {
 		pod := obj.(*api.Pod)
 
-		if strings.Compare(pod.Status.HostIP, nodeIp) != 0 {
-			continue
+		if !npc.standalone {
+			if strings.Compare(pod.Status.HostIP, nodeIp) != 0 {
+				continue
+			}
 		}
 		for _, policy := range *npc.networkPoliciesInfo {
 			if policy.namespace != pod.ObjectMeta.Namespace {
@@ -1557,6 +1562,7 @@ func NewNetworkPolicyController(clientset kubernetes.Interface,
 	}
 
 	npc.nodeHostName = node.Name
+	npc.standalone = config.StandaloneServer
 
 	nodeIP, err := utils.GetNodeIP(node)
 	if err != nil {
