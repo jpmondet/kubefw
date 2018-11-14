@@ -45,7 +45,7 @@ func Main() error {
 	}
 
 	if os.Geteuid() != 0 {
-		return fmt.Errorf("cnfw needs to be run with privileges to execute iptables, ipset and configure ipvs")
+		return fmt.Errorf("kubefw needs to be run with privileges to execute iptables, ipset and configure ipvs")
 	}
 
 	if config.CleanupConfig {
