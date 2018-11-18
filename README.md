@@ -2,6 +2,13 @@
 
 Lightweight implementation of Kubernetes Network Policies (translating them into iptables)
 
+
+## Release state
+
+* Ready for Kubernetes
+* Still WIP for standalone (nearly ready, there is a non-critical bug I would
+  like to resolve) 
+
 ## Quick Usage
 
 ### In a Kubernetes cluster (most common usage)
