@@ -156,6 +156,7 @@ func (hc *HealthController) RunCheck(healthChan <-chan *ControllerHeartbeat, sto
 	}
 }
 
+//SetAlive starts timers
 func (hc *HealthController) SetAlive() {
 
 	now := time.Now()

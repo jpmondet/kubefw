@@ -249,7 +249,11 @@ func (npc *NetworkPolicyController) Sync() error {
 
 	err = cleanupStaleRules(activePolicyChains, activePodFwChains, activePolicyIPSets)
 	if err != nil {
-		return errors.New("Aborting sync. Failed to cleanup stale iptable rules: " + err.Error())
+		if npc.standalone {
+			glog.Infof("Partially cleaned up : " + err.Error())
+		} else {
+			return errors.New("Aborting sync. Failed to cleanup stale iptable rules: " + err.Error())
+		}
 	}
 
 	return nil

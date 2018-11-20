@@ -2,7 +2,6 @@
 
 Lightweight implementation of Kubernetes Network Policies (translating them into iptables)
 
-
 ## Release state
 
 * Ready for Kubernetes
