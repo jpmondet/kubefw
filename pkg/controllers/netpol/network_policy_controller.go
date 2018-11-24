@@ -286,8 +286,6 @@ func (npc *NetworkPolicyController) syncNetworkPolicyChains(version string) (map
 
 		activePolicyChains[policyChainName] = true
 
-		glog.Infof("policyChainName" + policyChainName)
-
 		// create a ipset for all destination pod ip's matched by the policy spec PodSelector
 		targetDestPodIPSetName := policyDestinationPodIPSetName(policy.namespace, policy.name)
 		targetDestPodIPSet, err := npc.ipSetHandler.Create(targetDestPodIPSetName, utils.TypeHashIP, utils.OptionTimeout, "0")
@@ -656,7 +654,6 @@ func (npc *NetworkPolicyController) syncPodFirewallChains(version string) (map[s
 			return nil, fmt.Errorf("Failed to run iptables command: %s", err.Error())
 		}
 		activePodFwChains[podFwChainName] = true
-		glog.Infof("podFwChainName: " + podFwChainName)
 
 		// add entries in pod firewall to run through required network policies
 		for _, policy := range *npc.networkPoliciesInfo {
@@ -781,7 +778,6 @@ func (npc *NetworkPolicyController) syncPodFirewallChains(version string) (map[s
 			return nil, fmt.Errorf("Failed to run iptables command: %s", err.Error())
 		}
 		activePodFwChains[podFwChainName] = true
-		glog.Infof("podFwChainName: " + podFwChainName)
 
 		// add entries in pod firewall to run through required network policies
 		for _, policy := range *npc.networkPoliciesInfo {
