@@ -62,7 +62,7 @@ spec:
     spec:
       containers:
       - name: kubefw
-        image: jpmondet/kubefw
+        image: docker.io/jpmondet/kubefw:0.1.2
         args: ["/kubefw"]
         securityContext:
           privileged: true
