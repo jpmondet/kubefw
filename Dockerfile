@@ -8,6 +8,7 @@ FROM alpine:latest
 COPY --from=build /go/bin/kubefw /
 RUN apk add --no-cache \
       iptables \
+      ip6tables \
       ipset \
       iproute2 \
       ipvsadm \
