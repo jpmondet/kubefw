@@ -57,9 +57,8 @@ spec:
     metadata:
       labels:
         k8s-app: kubefw
-      annotations:
-        scheduler.alpha.kubernetes.io/critical-pod: ''
     spec:
+      priorityClassName: system-node-critical
       containers:
       - name: kubefw
         image: docker.io/jpmondet/kubefw:0.2.0
