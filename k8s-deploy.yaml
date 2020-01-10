@@ -1,3 +1,11 @@
+apiVersion: scheduling.k8s.io/v1
+description: Used for system critical kubefw pods
+kind: PriorityClass
+metadata:
+  name: kubefw-node-critical
+value: 10000
+globalDefault: false
+---
 apiVersion: v1
 kind: Namespace
 metadata:
@@ -58,7 +66,7 @@ spec:
       labels:
         k8s-app: kubefw
     spec:
-      priorityClassName: system-node-critical
+      priorityClassName: kubefw-node-critical
       containers:
       - name: kubefw
         image: docker.io/jpmondet/kubefw:0.2.0
